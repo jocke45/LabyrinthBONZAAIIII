@@ -1,20 +1,18 @@
-import org.newdawn.slick.Image;
-
 public class GameObject implements GameObjectInterface {
-	private Drawable img;
-	private float[] pos;
+	private int[] img = new int[4];
+	private float[] pos = new float[2];
 	
-	public GameObject(Image i, float x, float y) {
+	public GameObject(int[] img, float x, float y) {
 		pos[0] = x;
 		pos[1] = y;
-		img = new Drawable(i, pos);
+		this.img = img;
 	}
 	
 	public float[] getPos() {
 		return pos;
 	}
 	
-	public Drawable getDrawable() {
+	public int[] getImg() {
 		return img;
 	}
 	

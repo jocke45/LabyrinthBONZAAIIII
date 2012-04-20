@@ -15,7 +15,7 @@ public interface GameObjectInterface {
 	 * Returns the image object from the object
 	 * @return The image object that is 
 	 */
-	public Drawable getDrawable();
+	public int[] getImg();
 	
 	/**
 	 * Checks if a collision has occurred with another GameObject and runs some code
