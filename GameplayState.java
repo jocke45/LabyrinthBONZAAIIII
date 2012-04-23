@@ -11,6 +11,7 @@ public class GameplayState extends BasicGameState {
 	private static String s = "dugga!";
 	private static Image res;
 	private static HashSet<GameObject> obst;
+	private static Player player;
 
 	private enum STATES {
 		LOAD_RES, MOVEiGUESS, PAUSE, MENU, WIN
@@ -18,7 +19,6 @@ public class GameplayState extends BasicGameState {
 
 	private STATES state = null;
 	private Level level;
-	private float[] d = new float[2];
 	int stateID = -1;
 
 	GameplayState(int stateID) {
@@ -31,20 +31,34 @@ public class GameplayState extends BasicGameState {
 		return stateID;
 	}
 
+	public boolean checkPlayerCollision() {
+		for(GameObject o : obst) {
+			if(o.checkCollision(player.getPoly())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public void init(GameContainer c, StateBasedGame sbg) throws SlickException {
 		level = new Level(s);
 		res = level.getResources();
 		obst = level.getObj();
-		
-		d[0] = 200f;
-		d[1] = 200f;
+		player = level.getPlayer();
 		state = STATES.MOVEiGUESS;
 	}
+	
 	private void renderObjects() {
+		int[] i;
+		float[] p;
 		for(GameObject o : obst) {
-			int[] i = o.getImg();
-			res.getSubImage(i[0], i[1], i[2], i[3]).draw();
+			i = o.getImg();
+			p = o.getPos();
+			res.getSubImage(i[0], i[1], i[2], i[3]).draw(p[0],p[1]);
 		}
+		i = player.getImg();
+		p = player.getPos();
+		res.getSubImage(i[0], i[1], i[2], i[3]).draw(p[0],p[1]);
 	}
 	
 	public void render(GameContainer c, StateBasedGame sbg, Graphics g) {
@@ -81,24 +95,31 @@ public class GameplayState extends BasicGameState {
 			break;
 		//Uppdaterar alla objekt
 		case MOVEiGUESS:
+			Player.MOVES m = Player.MOVES.MOVE_NONE;
 			if (input.isKeyDown(Input.KEY_ESCAPE)) {
 				state = STATES.MENU;
 			}
 			if (input.isKeyDown(Input.KEY_W)) {
-				state = STATES.LOAD_RES;
+				m = Player.MOVES.MOVE_UP;
 			}
 			if (input.isKeyDown(Input.KEY_S)) {
+				m = Player.MOVES.MOVE_DOWN;
 			}
 			if (input.isKeyDown(Input.KEY_A)) {
+				m = Player.MOVES.MOVE_LEFT;
 			}
 			if (input.isKeyDown(Input.KEY_D)) {
+				m = Player.MOVES.MOVE_RIGHT;
 			}
 			if (input.isKeyDown(Input.KEY_P)) {
 				state = STATES.PAUSE;
 			}
-			d[0] += .2f;
-			d[1] += .2f;
+			player.update(m);
+			if(checkPlayerCollision()) {
+				player.playerCollide(m);
+			}
 			break;
+			
 		//Pausar spelet
 		case PAUSE:
 			if (input.isKeyDown(Input.KEY_R)) {

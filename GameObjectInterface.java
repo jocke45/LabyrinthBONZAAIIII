@@ -1,3 +1,5 @@
+import org.newdawn.slick.geom.Polygon;
+
 /**
  * GameObject handles basic objects
  * @author Johan Ekström
@@ -21,9 +23,9 @@ public interface GameObjectInterface {
 	 * Checks if a collision has occurred with another GameObject and runs some code
 	 * @param collisionObject The object that is checked for collision
 	 */
-	public boolean checkCollision();
+	public boolean checkCollision(Polygon e);
 	
-	public void setPos(float x, float y);
+	public void setPos(float x, float y, boolean relative);
 	
 	public void update();
 }

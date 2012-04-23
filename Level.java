@@ -20,8 +20,10 @@ public class Level implements LevelInterface {
 		img[1] = 0;
 		img[2] = 16;
 		img[3] = 16;
-		GameObject obj = new GameObject(img, 0, 0);
+		GameObject obj = new Wall(300, 364);
 		obstacles.add(obj);
+		GameObject i = new Wall(300, 300);
+		obstacles.add(i);
 	}
 	
 	public int[] getDimensions() {
@@ -32,8 +34,7 @@ public class Level implements LevelInterface {
 		try {
 		return new Image("./res/slick.png");
 		}
-		catch(SlickException e) {
-			
+		catch(SlickException e) {	
 		}
 		return null;
 	}
@@ -41,7 +42,22 @@ public class Level implements LevelInterface {
 	public HashSet<GameObject> getObj() {
 		return obstacles;
 	}
+	
+	public Player getPlayer() {
+		int[] img = new int[4];
+		img[0] = 0;
+		img[1] = 0;
+		img[2] = 16;
+		img[3] = 16;
+		return new Player(64,64);
+	}
 	public String getNextLevel() {
 		return "drugS";
+	}
+	
+	public void update() {
+		for (GameObject o : obstacles) {
+			o.update();
+		}
 	}
 }
