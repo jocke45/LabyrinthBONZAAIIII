@@ -1,60 +1,81 @@
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.HashSet;
 
 public class Level implements LevelInterface {
 
 	private HashSet<GameObject> obstacles;
 	private int[] dim = new int[2];
-	
+	private float[] playerPos;
+
 	public Level(String file) {
 		loadLevel(file);
 	}
-	
+
 	public void loadLevel(String file) {
 		obstacles = new HashSet<GameObject>();
-		dim[0] = 10;
-		dim[1] = 10;
-		int[] img = new int[4];
-		img[0] = 0;
-		img[1] = 0;
-		img[2] = 16;
-		img[3] = 16;
-		GameObject obj = new Wall(300, 364);
-		obstacles.add(obj);
-		GameObject i = new Wall(300, 300);
-		obstacles.add(i);
+		int vPos = 0;
+		try {
+			BufferedReader levelFile = new BufferedReader(new FileReader(file));
+			String edges = levelFile.readLine();
+			while (edges != null) {
+				System.out.println(edges);
+				for (int i = 0; i < edges.length(); i++) {
+					if (edges.substring(i, i + 1).equals("H")) {
+						obstacles.add(new Wall(i * 16, vPos - 2));
+					} else if (edges.substring(i, i + 1).equals("P")) {
+						playerPos = new float[] { i * 16, vPos + 2};
+					}
+				}
+
+				edges = levelFile.readLine();
+				System.out.println(edges);
+				if (edges != null) {
+					for (int i = 0; i < edges.length(); i++) {
+						for (i = 0; i < edges.length(); i++) {
+							if (edges.substring(i, i + 1).equals("V")) {
+								obstacles.add(new WallV((i * 16) - 2, vPos));
+							} else if (edges.substring(i, i + 1).equals("P")) {
+								playerPos = new float[] { i * 16, vPos + 2};
+							}
+						}
+					}
+					edges = levelFile.readLine();
+					vPos += 16;
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
-	
+
 	public int[] getDimensions() {
 		return dim;
 	}
-	
+
 	public Image getResources() {
 		try {
-		return new Image("./res/slick.png");
-		}
-		catch(SlickException e) {	
+			return new Image("./res/slick.png");
+		} catch (SlickException e) {
 		}
 		return null;
 	}
-	
+
 	public HashSet<GameObject> getObj() {
 		return obstacles;
 	}
-	
+
 	public Player getPlayer() {
-		int[] img = new int[4];
-		img[0] = 0;
-		img[1] = 0;
-		img[2] = 16;
-		img[3] = 16;
-		return new Player(64,64);
+		return new Player(playerPos[0], playerPos[1]);
 	}
+
 	public String getNextLevel() {
 		return "drugS";
 	}
-	
+
 	public void update() {
 		for (GameObject o : obstacles) {
 			o.update();

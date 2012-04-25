@@ -22,7 +22,7 @@ public class GameplayState extends BasicGameState {
 	int stateID = -1;
 
 	GameplayState(int stateID) {
-		s = "yayZer";
+		s = "./res/level1.txt";
 		this.stateID = stateID;
 	}
 

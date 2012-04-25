@@ -1,5 +1,5 @@
 public class Wall extends GameObject {
-	private int[] img = {0,0,16,16};
+	private int[] img = {0,0,16,4};
 	
 	public Wall(float x, float y) {
 		super(x,y);
